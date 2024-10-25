@@ -47,7 +47,7 @@ class Goats {
     async countdown(seconds) {
         for (let i = seconds; i >= 0; i--) {
             readline.cursorTo(process.stdout, 0);
-            process.stdout.write(`===== Waiting ${i} seconds to continue loop-D4rkCipherX =====`);
+            process.stdout.write(`===== Waiting ${i} seconds to continue loop =====`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         this.log('', 'info');
