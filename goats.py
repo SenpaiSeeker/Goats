@@ -170,11 +170,21 @@ class Goats:
         with open(data_file, 'r', encoding='utf-8') as file:
             data = [line.strip() for line in file.readlines() if line.strip()]
 
+        if not data:
+            self.log('Data file is empty!', 'error')
+            return
+
         while True:
             for i, init_data in enumerate(data):
-                user_data = json.loads(init_data.split('user=')[1].split('&')[0])
-                user_id = user_data['id']
-                first_name = user_data['first_name']
+                self.log(f'Processing data: {init_data}', 'custom')  # Debugging log
+                try:
+                    user_data = json.loads(init_data.split('user=')[1].split('&')[0])
+                except (IndexError, json.JSONDecodeError) as e:
+                    self.log(f'Error parsing user data from init_data: {init_data}. Error: {str(e)}', 'error')
+                    continue  # Skip to the next init_data
+
+                user_id = user_data.get('id')
+                first_name = user_data.get('first_name', 'Unknown')
 
                 print(f"========== Account {i + 1} | {first_name} ==========")
                 login_result = await self.login(init_data)
@@ -190,6 +200,7 @@ class Goats:
 
                 self.log('Waiting for next account...', 'warning')
                 await self.countdown(60)  # Wait for 60 seconds before the next loop
+
 
 if __name__ == "__main__":
     import asyncio
