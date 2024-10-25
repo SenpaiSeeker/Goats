@@ -259,7 +259,7 @@ class Goats {
                 await this.handleMissions(accessToken);
 
                 console.log(`Waiting for next account...`.yellow);
-                await this.countdown(60); // Wait for 17 seconds before the next loop
+                await this.countdown(65); // Wait for 17 seconds before the next loop
             }
         }
     }
