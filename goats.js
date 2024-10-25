@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
+const axios = require('./lib/axios.js');
 const colors = require('colors');
 const readline = require('readline');
 const { DateTime } = require('luxon');
