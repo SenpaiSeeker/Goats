@@ -47,7 +47,7 @@ class Goats {
     async countdown(seconds) {
         for (let i = seconds; i >= 0; i--) {
             readline.cursorTo(process.stdout, 0);
-            process.stdout.write(`===== Waiting ${i} seconds to continue loop =====`);
+            process.stdout.write(`===== Waiting ${i} seconds to continue loop-D4rkCipherX =====`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         this.log('', 'info');
@@ -231,6 +231,27 @@ class Goats {
         }
     }
 
+    async processAccount(initData, i) {
+        const userData = JSON.parse(decodeURIComponent(initData.split('user=')[1].split('&')[0]));
+        const firstName = userData.first_name;
+
+        console.log(`========== Account ${i + 1} | ${firstName} ==========`.blue);
+        const loginResult = await this.login(initData);
+        if (!loginResult.success) {
+            this.log(`Login failed for ${firstName}: ${loginResult.error}`, 'error');
+            return;
+        }
+
+        this.log(`Login successful!`, 'success');
+        const accessToken = loginResult.data.accessToken;
+
+        await this.handleCheckin(accessToken);
+        await this.handleMissions(accessToken);
+
+        // console.log(`Waiting for next account...`.yellow);
+        // await this.countdown(60); // Wait for 60 seconds before the next loop
+    }
+
     async main() {
         const dataFile = path.join(__dirname, 'data.txt');
         const data = fs.readFileSync(dataFile, 'utf8')
@@ -239,28 +260,12 @@ class Goats {
             .filter(Boolean);
 
         while (true) {
-            for (let i = 0; i < data.length; i++) {
-                const initData = data[i];
-                const userData = JSON.parse(decodeURIComponent(initData.split('user=')[1].split('&')[0]));
-                const userId = userData.id;
-                const firstName = userData.first_name;
+            // Process each account in parallel within the loop
+            await Promise.all(data.map((initData, i) => this.processAccount(initData, i)));
 
-                console.log(`========== Account ${i + 1} | ${firstName} ==========`.blue);
-                const loginResult = await this.login(initData);
-                if (!loginResult.success) {
-                    this.log(`Login failed for ${firstName}: ${loginResult.error}`, 'error');
-                    continue;
-                }
-
-                this.log(`Login successful!`, 'success');
-                const accessToken = loginResult.data.accessToken;
-
-                await this.handleCheckin(accessToken);
-                await this.handleMissions(accessToken);
-
-                console.log(`Waiting for next account...`.yellow);
-                await this.countdown(65); // Wait for 17 seconds before the next loop
-            }
+            // Optional delay between each batch cycle, if needed
+            console.log("Batch completed. Restarting after delay.".yellow);
+            await this.countdown(60);
         }
     }
 }
