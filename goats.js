@@ -149,7 +149,6 @@ class Goats {
             } else {
                 this.log(`Failed to complete mission ${mission.name}`, 'error');
             }
-            await this.countdown(1);
         }
 
         for (const mission of regular) {
@@ -161,6 +160,7 @@ class Goats {
             }
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
+        await this.countdown(1);
     }
 
     async getCheckinInfo(accessToken) {
