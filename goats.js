@@ -149,6 +149,7 @@ class Goats {
             } else {
                 this.log(`Failed to complete mission ${mission.name}`, 'error');
             }
+            await this.countdown(1);
         }
 
         for (const mission of regular) {
