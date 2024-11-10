@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const colors = require('colors');
-const readline = require('readline');
 const { DateTime } = require('luxon');
 const randomUseragent = require('random-useragent');
 
@@ -47,8 +46,7 @@ class Goats {
 
     async countdown(seconds) {
         for (let i = seconds; i >= 0; i--) {
-            readline.cursorTo(process.stdout, 0);
-            process.stdout.write(`===== Waiting ${i} seconds to continue =====`);
+            process.stdout.write(`===== Waiting ${i} seconds to continue =====\r`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         process.stdout.write(`\n`);
@@ -135,7 +133,7 @@ class Goats {
         const missionsResult = await this.getMissions(accessToken);
         if (!missionsResult.success) {
             this.log(`Unable to fetch missions: ${missionsResult.error}`, 'error');
-            return await this.handleMissions(accessToken);
+            return;
         }
 
         const { special, regular } = missionsResult.missions;
@@ -160,7 +158,6 @@ class Goats {
             }
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
-        await this.countdown(1);
     }
 
     async getCheckinInfo(accessToken) {
@@ -208,10 +205,9 @@ class Goats {
 
             const { result, lastCheckinTime } = checkinInfo.data;
             const currentTime = Date.now();
-            const timeSinceLastCheckin = currentTime - lastCheckinTime;
             const twentyFourHours = 24 * 60 * 60 * 1000;
 
-            if (timeSinceLastCheckin < twentyFourHours) {
+            if (currentTime - lastCheckinTime < twentyFourHours) {
                 this.log(`Not enough time since last check-in`, 'warning');
                 return;
             }
