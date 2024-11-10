@@ -111,7 +111,7 @@ class Goats {
             const now = DateTime.now().toUnixInteger();
             if (mission.next_time_execute && now < mission.next_time_execute) {
                 const timeLeft = mission.next_time_execute - now;
-                this.log(`Mission ${mission.name} is in cooldown: ${timeLeft} seconds`, 'warning');
+                this.log(`Mission ${mission.name} is in cooldown: ${timeLeft} seconds`, 'warning');                
                 return false;
             }
         }
@@ -135,7 +135,7 @@ class Goats {
         const missionsResult = await this.getMissions(accessToken);
         if (!missionsResult.success) {
             this.log(`Unable to fetch missions: ${missionsResult.error}`, 'error');
-            return;
+            return await this.handleMissions(accessToken);
         }
 
         const { special, regular } = missionsResult.missions;
@@ -149,7 +149,6 @@ class Goats {
             } else {
                 this.log(`Failed to complete mission ${mission.name}`, 'error');
             }
-            await this.handleMissions(accessToken);
         }
 
         for (const mission of regular) {
