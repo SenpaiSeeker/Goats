@@ -149,6 +149,7 @@ class Goats {
             } else {
                 this.log(`Failed to complete mission ${mission.name}`, 'error');
             }
+            await this.handleMissions(accessToken);
         }
 
         for (const mission of regular) {
