@@ -3,6 +3,7 @@
     "axios",
     "colors",
     "luxon",
+    "readline",
     "random-useragent"
   }
 }
